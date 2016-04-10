@@ -1,0 +1,70 @@
+<div>
+    <md-content class="md-padding" layout="row">
+        
+        <button ng-click = 'logout()'>Log Out</button>
+        
+        <md-card>
+            <table>
+                <caption>To Do List</caption>
+                <tr>
+                    <th>ID</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                </tr>
+                <tr ng-repeat='t in toDos'>
+                    <td>{{t.id}}</td>
+                    <td>{{t.status}}</td>
+                    <td>{{t.priority}}</td>
+                    <td>{{t.date}}</td>
+                    <td>{{t.description}}</td>
+                </tr>
+            </table>
+        </md-card>
+        
+        <md-card>
+            <table>
+                <caption>Message List</caption>
+                <tr>
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>University Name</th>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Content</th>
+                </tr>
+                <tr ng-repeat="m in messages">
+                    <td>{{m.id}}</td>
+                    <td>{{m.contact.firstname}}</td>
+                    <td>{{m.contact.lastname}}</td>
+                    <td>{{m.contact.university.name}}</td>
+                    <td>{{m.date}}</td>
+                    <td>{{m.category}}</td>
+                    <td>{{m.content}}</td>
+                </tr>
+            </table>
+        </md-card>
+        
+        <md-card>
+            <table>
+                <caption>Book List</caption>
+                <tr>
+                    <th>ID</th>
+                    <th>isbn10</th>
+                    <th>isbn13</th>
+                    <th>title</th>
+                    <th>category</th>
+                </tr>
+                <tr ng-repeat="b in books">
+                    <td>{{b.id}}</td>
+                    <td>{{b.isbn10}}</td>
+                    <td>{{b.isbn13}}</td>
+                    <td>{{b.title}}</td>
+                    <td>{{b.category}}</td>
+                </tr>
+            </table>
+        </md-card>
+    </md-content>
+</div>

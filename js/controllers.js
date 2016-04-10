@@ -2,69 +2,57 @@ var employeeControllers = angular.module('employeeControllers',[]);
 
 var employee_serviceURL = 'https://web3-assignment2-nobuhumi.c9users.io/api/employees/';
 
-// Controller for employee list view
-employeeControllers.controller('EmployeeListCtrl', ['$scope', '$http',
-    function($scope,$http) {
-   
-    $http.get(employee_serviceURL)
-        .then(function (response) {
-            $scope.books = response.data;
-        });
-    }
-]);
 
-// Controller for single employee detail view
-employeeControllers.controller('EmployeeDetailCtrl', ['$scope', '$routeParams', '$http',
-    function($scope,$routeParams,$http) {
-    $scope.isbn = $routeParams.isbn;
-    
-    $http.get(employee_serviceURL + $routeParams.isbn)
-        .then(function (response) {
-            $scope.book = response.data[0];
-        });
-    }
-]);
-
-employeeControllers.controller("LoginCtrl", ["$scope","$cookies", "WebService",
-    function($scope, $cookies, WebService) {
-        
-        $scope.credentials = "hello!";
-        
-        $scope.login = function() {
+// Controller for dashboard view
+employeeControllers.controller("DashBoardCtrl", ["$scope", "$cookies", "$routeParams", "$location", "WebService", 
+    function($scope, $cookies, $routeParams, $location, WebService) {
+        var token = $cookies.get("token");
+        WebService.dashboardData(token)
+            .then(function (response) {
+                $scope.books = response.data[0].books;
+                $scope.messages = response.data[0].messages;
+                $scope.toDos = response.data[0].todo;
+            })
+            .catch (function () {
+                $scope.error = "error getting data";
+            });
             
-            //$("#results").text("in progress");
+        $scope.logout = function () {
+            $cookies.remove("token");
             
-            WebService.validateLogin($scope.userName, $scope.password)
-                .then(function (response) {
-                  //$("#results").text("success"); 
-                  $scope.credentials = $cookies.getAll();
-                  console.log(response.data);
-                })
-                .catch(function () {
-                    $scope.error = "error getting data";
-                    
-                    //console.log(error);
-                });
+            $location.path("/login");
         };
+    }
+]);
+
+employeeControllers.controller("LoginCtrl", ["$scope","$cookies", "WebService", "$location",
+    function($scope, $cookies, WebService, $location) {
+        
+        if ($cookies.get("token") !== undefined) {
+            console.log($cookies.get("token"));
+            $location.path('/dashBoard');
+        }
+        else {
+            $scope.login = function() {
+                
+                WebService.validateLogin($scope.userName, $scope.password)
+                    .then(function (response) {
+                      $scope.credentials = response;
+                      $cookies.put("token", response.data);
+                      
+                    //   var token = $cookies.get("token");
+                    //   console.log("token is: " + token);
+                      //$cookies.remove('token');
+                      //console.log("token is:" + $cookies.get("token"));
+                      $location.path('/dashBoard');
+                    })
+                    .catch(function () {
+                        $scope.error = "error getting data";
+                        
+                        //console.log(error);
+                    });
+            };
+        }
     }    
 ]);
 
-// employeeControllers.controller('LoginCtrl', ['$scope', 'User', function($scope, User) {
-//     $scope.username = "viewer";
-//     $scope.password = "viewer";
-
-//     $scope.login = function(event) {
-//         event.preventDefault();
-
-//         User.login($scope.username ,$scope.password)
-//             .then(function(response) {
-//                 $scope.status = response.status;
-//                 $scope.data = response.data;
-//                 alert(JSON.stringify({data: response.data}));
-//         }, function (response) { 
-//                 $scope.data = response.data || "Request failed";
-//                 $scope.status = response.status;
-//                 alert( "failure message: " + JSON.stringify({data: response.data}));
-//         })
-//     };
-// }]);

@@ -3,24 +3,12 @@
     employeeApp.config(['$routeProvider',
     function($routeProvider) {
         $routeProvider
-        //all employees listed
-        .when("/employees", {
-            templateUrl: "partials/employeeList",
-            controller: "EmployeeListCtrl"
-            
-        })
-        //one specific employee with detail
-        .when("/employees/:id", {
-            templateUrl: "partials/employeeDetail.html",
-            controller: "EmployeeDetailCtrl"
-            
-        })
         .when("/login", {
             templateUrl: "partials/login.html",
             controller: "LoginCtrl"
         })
-        .when("", {
-            templateUrl: "partials/dashBoard.html",
+        .when("/dashBoard", {
+            templateUrl: "partials/dashboard.html",
             controller: "DashBoardCtrl"
         })
         //otherwise, display login page
@@ -42,24 +30,23 @@
                         'password': password
                     }
                 });
+            },
+            dashboardData: function (token) {
+                return $http ({
+                   method: 'get',
+                   url: 'https://web3-assignment2-nobuhumi.c9users.io/api/employees/' + token
+                });
+            },
+            updateToDo: function () {
+                
+            },
+            createToDo: function () {
+                
+            },
+            deleteToDo: function () {
+                
             }
         };
     });
-    
-    // employeeApp.factory("User", ['$http', function($http) {
-    //     return {
-    //         login: function(username, password) {
-    //             var data = {username: username, password: password};
-    //             console.log(JSON.stringify(data));
-    //             return $http({
-    //                 method: 'get',
-    //                 url: "https://web3-assignment2-nobuhumi.c9users.io/api/employees/login/" + username
-    //                     + "&" + password,
-    //                 data: JSON.stringify(data),
-    //                 headers: {'Content-Type': 'application/json'}
-    //             })
-    //         }
-    //     }
-    // }]);
     
 }());

@@ -1,14 +1,15 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
+//var expressjwt = require("express-jwt");
+var jwt = require("jsonwebtoken");
 
 
 var app = express();
 
-app.use(cookieParser());
+//app.use(expressjwt());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-
+//app.set('',config.secret);
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:/a2');
@@ -113,10 +114,14 @@ app.route('/api/employees/login/:username')
                     // if returned empty then there is no user
                     console.log(data);
                     
+                    var token = jwt.sign({username: req.params.username}, 'comp4513', {expiresIn: "20m"});
+                    // var decoded = jwt.decode(token, {complete: true});
+                    // console.log(decoded);
+                    
                     //resp.cookie('authenticated', 'true', {secure: false, httpOnly: false, expires: new Date (Date.now() + (1000 * 60 * 20))});
-                    resp.cookie('authenticated', 'true', {Domain: "preview.c9users.io",Path: "/nobuhumi/web3-assignment2"});
+                    //resp.cookie('authenticated', 'true', {Domain: "preview.c9users.io",Path: "/nobuhumi/web3-assignment2"});
                     //console.log(resp.cookies);
-                    resp.json(data);
+                    resp.json(token);
                     
                 }
             }
@@ -125,19 +130,31 @@ app.route('/api/employees/login/:username')
     
     
 //route for getting a single employee's data
-app.route('/api/employees/:id')
+//token is a jsonwebtoken that includes the employee's username when decoded
+app.route('/api/employees/:token')
     .get(function(req, resp) {
         console.log("in filtered route");
-        Employee.find({id: req.params.id}, function(err, data) {
+        jwt.verify(req.params.token, 'comp4513', function (err, decoded) {
             if (err) {
-                console.log('error finding all employee');
-                resp.json({ message: 'Unable to connect to employee database' });
+                console.log("error obtaining dashboard data: " + err);
+                resp.json({error: "error obtaining user data for dashboard"});
             }
             else {
-                // return found data as json back to request
-                resp.json(data);
+                Employee.find({username: decoded.username}, function(err, data) {
+                    if (err) {
+                        console.log('error finding employee');
+                        console.log(decoded);
+                        resp.json({ error: 'Unable to connect to employee database' });
+                    }
+                    else {
+                        // return found data as json back to request
+                        resp.json(data);
+                        console.log(data);
+                    }
+                });
             }
         });
+        
     });
     
 /*    
@@ -174,6 +191,7 @@ app.route('/api/employees/messages/:id')
                 resp.json({ message: 'Unable to retrieve employee\'s messages' });
             }
             else {
+                
                 // return found data as json back to request
                 resp.json(data[0].messages);
             }
