@@ -1,0 +1,16 @@
+{
+    "name": "Web3-A2-RyNoBo_EmployeeServer",
+    "version": "1.0.0",
+    "description": "Comp4513 Assignment 2 for Randy Connolly of Mount Royal Unniversity. This assignment was to get us familiar with Angular and web services built on node. This specific file is the node backend used for requesting data",
+    "main": "./employees-server.js",
+    "dependencies": {
+        "express": "4.13.x",
+        "body-parser": "1.15.x",
+        "jsonwebtoken": "5.7.x",
+        "mongoose": "4.4.x"
+    },
+    "engines": {
+        "node": "0.10.x"
+    }
+}
+

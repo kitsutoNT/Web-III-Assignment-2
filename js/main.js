@@ -35,7 +35,7 @@
             v: '3.17', //defaults to latest 3.X anyhow
             libraries: 'weather,geometry,visualization'
         });
-    })
+    });
     
     employeeApp.factory('WebService', function ($http, $q) {
         return {
@@ -43,7 +43,7 @@
                
                 return $http({
                     method: 'post',
-                    url: "https://web3-assignment2-nobuhumi.c9users.io/api/employees/login/" + userName,
+                    url: "http://web3a2-61805.onmodulus.net/api/employees/login/" + userName,
                     data: {
                         'password': password
                     }
@@ -52,13 +52,13 @@
             dashboardData: function (token) {
                 return $http ({
                    method: 'get',
-                   url: 'https://web3-assignment2-nobuhumi.c9users.io/api/employees/' + token
+                   url: 'http://web3a2-61805.onmodulus.net/api/employees/' + token
                 });
             },
             getToDo: function (userName, token) {
                 return $http ({
                     method: 'get',
-                    url: 'https://web3-assignment2-nobuhumi.c9users.io/api/employees/' + userName + "/todo/" + token
+                    url: 'http://web3a2-61805.onmodulus.net/api/employees/' + userName + "/todo/" + token
                 });
             },
             //done testing
@@ -66,7 +66,7 @@
             updateToDo: function (userName, todoID, token, todoItem) {
                 return $http ({
                    method: 'put',
-                   url: 'https://web3-assignment2-nobuhumi.c9users.io/api/employees/' + userName + '/todo/' + todoID,
+                   url: 'http://web3a2-61805.onmodulus.net/api/employees/' + userName + '/todo/' + todoID,
                    data: {
                        'token': token,
                        'status': todoItem.status,
@@ -80,7 +80,7 @@
             createToDo: function (userName, todoItem, token) {
                 return $http ({
                     method: 'post',
-                    url: 'https://web3-assignment2-nobuhumi.c9users.io/api/employees/' + userName + '/todo/',
+                    url: 'http://web3a2-61805.onmodulus.net/api/employees/' + userName + '/todo/',
                     data: {
                         'token': token,
                         'id': todoItem.id,
@@ -96,7 +96,7 @@
                 console.log(token);
                 return $http ({
                     method: 'delete',
-                    url: 'https://web3-assignment2-nobuhumi.c9users.io/api/employees/' + userName + '/todo/' + todoID + "/" + token
+                    url: 'http://web3a2-61805.onmodulus.net/api/employees/' + userName + '/todo/' + todoID + "/" + token
                     // data: {
                     //     'token': token
                     // }

@@ -1,23 +1,19 @@
 {
     "name": "Web3-A2-RyNoBo",
     "version": "1.0.0",
-    "description": "Comp4513 Assignment 2 for Randy Connolly of Mount Royal Unniversity. This assignment was to get us familiar with Angular and web services built on node.",
-    "main": "main.js",
+    "description": "Comp4513 Assignment 2 for Randy Connolly of Mount Royal Unniversity. This assignment was to get us familiar with Angular and web services built on node. This particular set of files is the angular client side.",
     "dependencies": {
         "angular": "1.5.x",
         "angular-animate": "1.5.x",
         "angular-aria": "1.5.x",
         "angular-cookies": "1.5.x",
-        "angular-google-map": "2.3.x",
+        "angular-google-maps": "2.3.x",
         "angular-material": "1.0.x",
         "angular-messages": "1.5.x",
-        "angular-route": "1.5.x",
-        "express": "4.13.x",
-        "body-parser": "1.15.x",
-        "jsonwebtoken": "5.7.x",
-        "mongoose": "4.4.x"
+        "angular-route": "1.5.x"
     },
     "engines": {
-        "node": "0.10.x"
+        "php": "5.4.38"
     }
 }
+
