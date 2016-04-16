@@ -72,7 +72,7 @@ employeeControllers.controller("DashBoardCtrl", ["$scope", "$cookies", "$routePa
             });
         };
         
-        //
+        //function to actually create to do list by calling webservice.
         function createController ($scope, $mdDialog) {
             $scope.createToDoItem = function () {
                 var date = new Date();
@@ -259,6 +259,8 @@ employeeControllers.controller("createCtrl", ["$scope", "$mdDialog", "WebService
     }
 );
 
+//controller to handle users authentication
+//generate token
 employeeControllers.controller("LoginCtrl", ["$scope","$cookies", "WebService", "$location",
     function($scope, $cookies, WebService, $location) {
         $scope.displayClass = "visibility";
