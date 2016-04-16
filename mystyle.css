@@ -11,4 +11,74 @@ body {
     width: 48px;
     height: 48px;
 }
-.material-icons.md-36 { font-size: 36px; }
+
+.material-icons.md-36 {
+    font-size: 36px;
+}
+
+.md-toolbar-tools {
+    background-color: #ff0066;
+}
+
+.tabsdemoDynamicHeight md-content {
+    background-color: transparent !important;
+}
+
+.tabsdemoDynamicHeight md-content md-tabs {
+    background: #f6f6f6;
+    border: 1px solid #e1e1e1;
+}
+
+.tabsdemoDynamicHeight md-content md-tabs md-tabs-wrapper {
+    background: white;
+}
+
+.md-subtoolbar-tools {
+    background: blue;
+}
+
+th {
+    width: auto;
+}
+
+th, td {
+    border: 1px solid #ddd;
+}
+
+md-dialog {
+    width:600px;
+}
+
+.mapContainer {
+	height:100%;
+	background-color:#4e5d6c;
+}
+  
+#map { 
+height: 500px; 
+border: outset 5px #072926;
+}
+
+.mapContainer .btn-default {
+	margin-top: 8px;
+	margin-bottom: 0px;
+	border: outset 5px #072926;
+}
+
+.universityDetailDialog {
+    height: 600px; 
+}
+
+.universityInfo p{
+    margin: 4px;
+    padding: 4px;
+}
+.angular-google-map-container { height: 400px; }
+
+.fabToolbar {
+    background-color: white;
+}
+
+.visibility {
+    display: none;
+}

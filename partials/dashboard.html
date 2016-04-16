@@ -1,70 +1,180 @@
-<div>
-    <md-content class="md-padding" layout="row">
-        
-        <button ng-click = 'logout()'>Log Out</button>
-        
-        <md-card>
-            <table>
-                <caption>To Do List</caption>
-                <tr>
-                    <th>ID</th>
-                    <th>Status</th>
-                    <th>Priority</th>
-                    <th>Date</th>
-                    <th>Description</th>
-                </tr>
-                <tr ng-repeat='t in toDos'>
-                    <td>{{t.id}}</td>
-                    <td>{{t.status}}</td>
-                    <td>{{t.priority}}</td>
-                    <td>{{t.date}}</td>
-                    <td>{{t.description}}</td>
-                </tr>
-            </table>
-        </md-card>
-        
-        <md-card>
-            <table>
-                <caption>Message List</caption>
-                <tr>
-                    <th>ID</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>University Name</th>
-                    <th>Date</th>
-                    <th>Category</th>
-                    <th>Content</th>
-                </tr>
-                <tr ng-repeat="m in messages">
-                    <td>{{m.id}}</td>
-                    <td>{{m.contact.firstname}}</td>
-                    <td>{{m.contact.lastname}}</td>
-                    <td>{{m.contact.university.name}}</td>
-                    <td>{{m.date}}</td>
-                    <td>{{m.category}}</td>
-                    <td>{{m.content}}</td>
-                </tr>
-            </table>
-        </md-card>
-        
-        <md-card>
-            <table>
-                <caption>Book List</caption>
-                <tr>
-                    <th>ID</th>
-                    <th>isbn10</th>
-                    <th>isbn13</th>
-                    <th>title</th>
-                    <th>category</th>
-                </tr>
-                <tr ng-repeat="b in books">
-                    <td>{{b.id}}</td>
-                    <td>{{b.isbn10}}</td>
-                    <td>{{b.isbn13}}</td>
-                    <td>{{b.title}}</td>
-                    <td>{{b.category}}</td>
-                </tr>
-            </table>
-        </md-card>
-    </md-content>
+<div ng-cloak>
+    <md-card class="md-whiteframe-4dp">
+        <md-fab-toolbar md-open="demo.isOpen" count="demo.count" md-direction="{{demo.selectedDirection}}">
+            <md-fab-trigger class="align-with-text">
+                <md-button aria-label="menu" class="md-fab md-primary">
+                    <md-icon>menu</md-icon>
+                </md-button>
+            </md-fab-trigger>
+            <md-toolbar>
+                <md-fab-actions>
+                    <div class="fabToolbar" layout="row" layout-align="space-around center">
+                        <md-button class="md-raised md-warn" ng-click='logout()'>
+                            <md-icon>power_settings_new</md-icon>Log Out</md-button>
+                        
+                    </div>
+                </md-fab-actions>
+            </md-toolbar>
+        </md-fab-toolbar>
+        <md-toolbar md-scroll-shrink layout-align="center center">
+            <i class="material-icons md-36">dashboard</i>
+            <div class="md-headline md-padding">Dashboard</div>
+        </md-toolbar>
+        <md-card-content>
+            <md-tabs md-dynamic-height md-border-bottom>
+                <md-tab label="To Do List">
+                    <md-content class="md-padding">
+                        <md-card>
+                            <md-button class="md-raised md-warn" ng-click='showCreateDialog()' style="width:20%">
+                                    <md-icon>create</md-icon>Create Entry</md-button>
+                            <table>
+                                <tr>
+                                    <th>
+                                        <md-icon>perm_identity</md-icon>ID</th>
+                                    <th>
+                                        <md-chips>
+                                            <md-chip>
+                                                <md-icon>stars</md-icon>Status</md-chip>
+                                        </md-chips>
+                                    </th>
+                                    <th>
+                                        <md-chips>
+                                            <md-chip>
+                                                <md-icon>priority_high</md-icon>Priority</th>
+                                    <th>
+                                        <md-icon>today</md-icon>Date</th>
+                                    <th>
+                                        <md-icon>description</md-icon>Description</th>
+                                    <th>
+                                        <md-icon>settings</md-icon>Edit</th>
+                                </tr>
+                                <tr ng-repeat='t in toDos'>
+                                    <td>{{t.id}}</td>
+                                    <td>
+                                        <md-chips>
+                                            <md-chip>{{t.status}}</md-chip>
+                                        </md-chips>
+                                    </td>
+                                    <td>
+                                        <md-chips>
+                                            <md-chip>{{t.priority}}</md-chip>
+                                        </md-chips>
+                                    </td>
+                                    <td>{{t.date | date: 'dd/MM/yyyy'}}</td>
+                                    <td>{{t.description}}</td>
+                                    <td>
+                                        <md-button class="md-primary md-raised" ng-click="showEditDialog(t.id)">
+                                            Edit
+                                        </md-button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </md-card>
+                    </md-content>
+                </md-tab>
+                <md-tab label="Message List">
+                    <md-content class="md-padding">
+                        <md-card>
+                            <table>
+                                <tr>
+                                    <th>
+                                        <md-icon>perm_identity</md-icon>ID</th>
+                                    <th>
+                                        <md-icon>create</md-icon>First Name</th>
+                                    <th>
+                                        <md-icon>create</md-icon>Last Name</th>
+                                    <th>
+                                        <md-icon>account_balance</md-icon>University Name</th>
+                                    <th>
+                                        <md-icon>today</md-icon>Date</th>
+                                    <th>
+                                        <md-icon>book</md-icon>Category</th>
+                                    <th>
+                                        <md-icon>drafts</md-icon>Content</th>
+                                </tr>
+                                <tr ng-repeat="m in messages | orderBy: '-date'">
+                                    <td>{{m.id}}</td>
+                                    <td>{{m.contact.firstname}}</td>
+                                    <td>{{m.contact.lastname}}</td>
+                                    <td>
+                                        <md-button class="md-primary" ng-click="showUniversityDetails(m.contact.university.id, 
+                                        m.contact.university.name,
+                                        m.contact.university.address,
+                                        m.contact.university.city,
+                                        m.contact.university.state,
+                                        m.contact.university.zip,
+                                        m.contact.university.website,
+                                        m.contact.university.latitude,
+                                        m.contact.university.longitude)">
+                                            {{m.contact.university.name}}
+                                        </md-button>
+                                    </td>
+                                    <td>{{m.date | date:'dd/MM/yyyy'}}</td>
+                                    <td>{{m.category}}</td>
+                                    <td>{{m.content}}</td>
+                                </tr>
+                            </table>
+                        </md-card>
+                    </md-content>
+                </md-tab>
+                <md-tab label="Book List">
+                    <md-content class="md-padding">
+                        <md-card>
+                            <table>
+                                <tr>
+                                    <th>
+                                        <md-icon>perm_identity</md-icon>
+                                        <a href="" ng-click="sortField='id'; sortReverse = !sortReverse">
+                                        ID
+                                        <span ng-show="sortField=='id'" class="fa" 
+                                        ng-class="sortReverse ? 'fa-caret-up' : 'fa-caret-down'"></span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <md-icon>assessment</md-icon>
+                                        <a href="" ng-click="sortField='isbn10'; sortReverse = !sortReverse">
+                                        isbn10
+                                        <span ng-show="sortField=='isbn10'" class="fa" 
+                                        ng-class="sortReverse ? 'fa-caret-up' : 'fa-caret-down'"></span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <md-icon>assignment</md-icon>
+                                        <a href="" ng-click="sortField='isbn13'; sortReverse = !sortReverse">
+                                        isbn13
+                                        <span ng-show="sortField=='isbn13'" class="fa" 
+                                        ng-class="sortReverse ? 'fa-caret-up' : 'fa-caret-down'"></span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <md-icon>title</md-icon>
+                                        <a href="" ng-click="sortField='title'; sortReverse = !sortReverse">
+                                        title
+                                        <span ng-show="sortField=='title'" class="fa" 
+                                        ng-class="sortReverse ? 'fa-caret-up' : 'fa-caret-down'"></span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <md-icon>book</md-icon>
+                                        <a href="" ng-click="sortField='category'; sortReverse = !sortReverse">
+                                        category
+                                        <span ng-show="sortField=='category'" class="fa" 
+                                        ng-class="sortReverse ? 'fa-caret-up' : 'fa-caret-down'"></span>
+                                        </a>
+                                    </th>
+                                </tr>
+                                <tr ng-repeat="b in books | orderBy:sortField:sortReverse">
+                                    <td>{{b.id}}</td>
+                                    <td>{{b.isbn10}}</td>
+                                    <td>{{b.isbn13}}</td>
+                                    <td>{{b.title}}</td>
+                                    <td>{{b.category}}</td>
+                                </tr>
+                            </table>
+                        </md-card>
+                    </md-content>
+                </md-tab>
+            </md-tabs>
+        </md-card-content>
+    </md-card>
 </div>

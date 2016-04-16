@@ -12,7 +12,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 //app.set('',config.secret);
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:/a2');
+//mongoose.connect('mongodb://localhost:/a2');
+mongoose.connect('mongodb://comp4513:web3@ds030829.mlab.com:30829/employees');
 
 var db = mongoose.connection;
 var employeeSchema = new mongoose.Schema({
@@ -42,7 +43,7 @@ var employeeSchema = new mongoose.Schema({
                 address: String,
                 city: String,
                 state: String, 
-                zip: Number,
+                zip: String,
                 website: String,
                 latitude: Number,
                 longitude: Number
@@ -72,6 +73,7 @@ db.once('open', function callback () {
 app.use(function(req, res, next) { 
     res.header("Access-Control-Allow-Origin", "*"); 
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept"); 
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
     next(); 
     
 });
@@ -103,7 +105,7 @@ app.route('/api/employees/login/:username')
         console.log(req.params.username + " - " + req.body.password);
         Employee.find(
             {username: req.params.username, password: req.body.password}, 
-            {id: 1, username: 1}, 
+            {id: 1, username: 1, password: 1}, 
             function(err, data) {
                 if (err) {
                     console.log('error finding an employee with specified username and password');
@@ -112,17 +114,16 @@ app.route('/api/employees/login/:username')
                 else {
                     // return found data as json back to request
                     // if returned empty then there is no user
-                    console.log(data);
-                    
-                    var token = jwt.sign({username: req.params.username}, 'comp4513', {expiresIn: "20m"});
-                    // var decoded = jwt.decode(token, {complete: true});
-                    // console.log(decoded);
-                    
-                    //resp.cookie('authenticated', 'true', {secure: false, httpOnly: false, expires: new Date (Date.now() + (1000 * 60 * 20))});
-                    //resp.cookie('authenticated', 'true', {Domain: "preview.c9users.io",Path: "/nobuhumi/web3-assignment2"});
-                    //console.log(resp.cookies);
-                    resp.json(token);
-                    
+                    if (data == "") {
+                        resp.json({ 
+                            message: 'Unable to validate supplied credentials.',
+                            error: true
+                        });
+                    }
+                    else {
+                        var token = jwt.sign({username: req.params.username}, 'comp4513', {expiresIn: "30m"});
+                        resp.json(token);
+                    }
                 }
             }
         );
@@ -149,7 +150,7 @@ app.route('/api/employees/:token')
                     else {
                         // return found data as json back to request
                         resp.json(data);
-                        console.log(data);
+                        //onsole.log(data);
                     }
                 });
             }
@@ -182,18 +183,35 @@ app.route('/api/employees/books/:id')
     DONE
 */
 //route for retireving an employee's messages
-app.route('/api/employees/messages/:id')
+//not used
+app.route('/api/employees/messages/:token')
     .get(function(req, resp) {
         console.log("in message retrieval route");
-        Employee.find({id: req.params.id}, {messages: 1}, function(err, data) {
+        jwt.verify(req.params.token, 'comp4513', function(err, decoded) {
             if (err) {
-                console.log('error finding messages');
-                resp.json({ message: 'Unable to retrieve employee\'s messages' });
+                console.log("error obtaining user message data: " + err);
+                resp.json({error: "error obtaining user messages"});
             }
             else {
-                
-                // return found data as json back to request
-                resp.json(data[0].messages);
+                Employee.find({username: decoded.username}, {messages: 1}).sort({"messages.$.id": "desc"})
+                    .exec(function(err, data) {
+                    if (err) {
+                        console.log('error finding messages');
+                        resp.json({ 
+                            message: 'Unable to retrieve employee\'s messages',
+                            error: err
+                        });
+                    }
+                    else {
+                        
+                        // return found data as json back to request
+                        resp.json(data);
+                    }
+                });
+                // Employee.aggregate(
+                //     {$unwind: '$messages'},
+                //     {$sort: {'messages.date': -1}},
+                // );
             }
         });
     })
@@ -202,6 +220,7 @@ app.route('/api/employees/messages/:id')
 //assumption: creating a message will store the message in the destination employee's message array
 //            not the sending employee's array
 //note: when testing in postman, key values must be in body and body must be in form-urlencoded
+//not actually required for assignment, created before assignment revision
     .post(function(req, resp) {
         console.log("in sending route");
         // var newID = Employee.find({ id: req.params.id}, {messages: 1}).length;
@@ -248,98 +267,167 @@ app.route('/api/employees/messages/:id')
     
 /*
     routing for the CRUD functionality of the to do list
-    DONE(I think)
+    DONE
 */
-//route for retrieval of to do list
+//route for retrieval of to do list (not used)
 //:id is the id of the employee, used to access their specific data
-app.route('/api/employees/:id/todo/')
+app.route('/api/employees/:userName/todo/:token')
     .get(function(req, resp) {
         console.log("in to do list retrieval route");
-        Employee.find({id: req.params.id}, {todo: 1}, function(err, data) {
+        jwt.verify(req.params.token, 'comp4513', function(err, decoded) {
             if (err) {
-                console.log('error finding to do list');
-                resp.json({ message: 'Unable to retrieve employee\'s to do list' });
+                console.log("error getting todo list: " + err);
+                resp.json({error: "error getting to do list"});
             }
             else {
-                // return found data as json back to request
-                resp.json(data[0].todo);
+                Employee.find({username: req.params.userName}, {todo: 1}, function(err, data) {
+                    if (err) {
+                        console.log('error finding to do list');
+                        resp.json({ message: 'Unable to retrieve employee\'s to do list' });
+                    }
+                    else {
+                        // return found data as json back to request
+                        resp.json(data[0].todo);
+                    }
+                });
             }
         });
-    })
+    });
 
 //route for creation of to do list item
+//note: this route would be very vulnerable to XXS attacks, if time permitted a purifier would be used to clean inputs
+//      Also, an item can be added without a to do id so this need to be made sure that it is added in the front end
+//      by taking the length of the to do list and adding 1, otherwise the data will be stored in the db and will be 
+//      unable to be deleted because the delete works on finding the item by id. Duplicate id's must be avoided as well
+app.route('/api/employees/:userName/todo/')
     .post(function(req, resp) {
         console.log("in to do list item creation route");
-        Employee.update(
-            {id: req.params.id},
-            {'$push': {
-                    "todo": {
-                        "id": req.body.id,
-                        "status": req.body.status,
-                        "priority": req.body.priority,
-                        "date": req.body.date,
-                        "description": req.body.description
-                    }
-                }
-            },
-            function(err, data) {
-                if (err) {
-                    console.log('error finding to do list');
-                    resp.json({ message: 'Unable to create to do list item' });
-                }
-                else {
-                    
-                    resp.json({ message: "to do item sucessfully created"});
-                }
+        jwt.verify(req.body.token, 'comp4513', function(err, decoded) {
+            if (err) {
+                console.log("error creating todo item: " + err);
+                resp.json({error: "error creating to do item"});
             }
-        );
+            else {
+                Employee.update(
+                    {username: req.params.userName},
+                    {'$push': {
+                            "todo": {
+                                "id": req.body.id,
+                                "status": req.body.status,
+                                "priority": req.body.priority,
+                                "date": req.body.date,
+                                "description": req.body.description
+                            }
+                        }
+                    },
+                    function(err, data) {
+                        if (err) {
+                            console.log(err);
+                            console.log('error finding to do list');
+                            resp.json({ 
+                                message: 'Unable to create to do list item', 
+                                created: false
+                            });
+                        }
+                        else {
+                            console.log("sucessfully created to do list item");
+                            resp.json({ 
+                                message: "to do item sucessfully created",
+                                created: true,
+                                createdItem: {
+                                    'id': req.body.id,
+                                    "status": req.body.status,
+                                    "priority": req.body.priority,
+                                    "date": req.body.date,
+                                    "description": req.body.description
+                                }
+                            });
+                        }
+                    }
+                );
+            }
+        });
     });
 
 //route for updating a to do list item
 //assumption: date of to do list items is the day they were created and cannot be changed
-app.route('/api/employees/:id/todo/:todoID')
+//known issue: an invalid todoID will count as a sucessful update even though nothing will be changed
+//             and blank inputs end up setting the field to an empty string but other than this, 
+//             the function works as intended
+//note: this route would be very vulnerable to XXS attacks, if time permitted a purifier would be used to clean inputs
+app.route('/api/employees/:userName/todo/:todoID')
     .put(function(req, resp) {
         console.log("in to do list update route");
-        Employee.update(
-            {id: req.params.id, 'todo.id': req.params.todoID}, 
-            {
-                '$set': {
-                    'todo.$.status': req.body.status,
-                    'todo.$.priority': req.body.priority,
-                    'todo.$.description': req.body.description
-                }
-            }, 
-            function(err, data) {
-                if (err) {
-                    console.log('error updating to do list');
-                    resp.json({ message: 'Unable to update employee\'s to do list item' });
-                }
-                else {
-                    //resp.json(data);
-                    resp.json({ message: "successfully updated the to do list item"});
-                }
+        jwt.verify(req.body.token, 'comp4513', function(err, decoded) {
+            if (err) {
+                console.log("error updating todo data: " + err);
+                resp.json({error: "error updating to do item"});
             }
-        );
-    })
+            else {
+                Employee.update(
+                    {username: req.params.userName, 'todo.id': req.params.todoID}, 
+                    {
+                        '$set': {
+                            'todo.$.status': req.body.status,
+                            'todo.$.priority': req.body.priority,
+                            'todo.$.description': req.body.description
+                        }
+                    }, 
+                    function(err, data) {
+                        if (err) {
+                            console.log('error updating to do list');
+                            resp.json({ 
+                                message: 'Unable to update employee\'s to do list item', 
+                                updated: false
+                            });
+                        }
+                        else {
+                            console.log("sucessfully updated the to do list item");
+                            resp.json({ 
+                                message: "successfully updated the to do list item",
+                                updated: true
+                            });
+                        }
+                    }
+                ); 
+            }
+        });
+    });
 
 //route for deleting a to do list item
+app.route('/api/employees/:userName/todo/:todoID/:token')
     .delete(function(req, resp) {
         console.log("in to do list delete route");
-        Employee.update(
-            {id: req.params.id}, 
-            {'$pull': {todo: {id: req.params.todoID}}}, 
-            function(err, data) {
-                if (err) {
-                    console.log('error deleting to do list item');
-                    resp.json({ message: 'Unable to delete specified to do list item' });
-                    //resp.json(err);
-                }
-                else {
-                    
-                    resp.json({ message: "successfully deleted the to do list item"});
-                }
+        console.log(req.params.token);
+        jwt.verify(req.params.token, 'comp4513', function(err, decoded) {
+            if (err) {
+                console.log("error deleting todo data: " + err);
+                resp.json({error: "error deleting to do item"});
+            } 
+            else {
+                Employee.update(
+                    {username: req.params.userName}, 
+                    {'$pull': {todo: {id: req.params.todoID}}}, 
+                    function(err, data) {
+                        if (err) {
+                            console.log('error deleting to do list item');
+                            resp.json({ 
+                                message: 'Unable to delete specified to do list item',
+                                deleted: false
+                            });
+                        }
+                        else {
+                            console.log("Sucessfully deleted the to do list item");
+                            resp.json({ 
+                                message: "successfully deleted the to do list item",
+                                deleted: true
+                            });
+                        }
+                    }
+                );
             }
-        );
+        });
+        
     });
 
 app.listen(process.env.PORT, process.env.IP);

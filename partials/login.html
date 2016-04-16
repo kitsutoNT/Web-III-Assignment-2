@@ -1,5 +1,7 @@
 <div>
-  <md-toolbar>
+    <section ng-controller="LoginCtrl" layout="column" flex layout-align="center center" class="login">
+        <md-card class="md-whiteframe-4dp">
+            <md-toolbar>
                 <div layout="column" layout-padding layout-align="center center">
                     <div>
                         <i class="material-icons md-36">home</i>
@@ -7,31 +9,37 @@
                     <div class="md-headline md-padding">Login</div>
                 </div>
             </md-toolbar>
-  <md-content class="md-padding"  layout="column">
-    <form ng-submit="login()" ng-controller="LoginCtrl" role="form" >
-      <div>
-        <md-whiteframe class="md-whiteframe-z1" layout="column" flex="20" layout-padding>
-          <md-input-container class="md-icon-float md-block">
-            <i class="material-icons">account_box</i>
-            <input id="userName" ng-model="userName" type="text" placeholder="UserName" ng-required="true">
-          </md-input-container class="md-block">
-          <md-input-container class="md-icon-float md-block">
-            <i class="material-icons">lock</i>
-            <input id="password" ng-model="password" type="password" placeholder="Password" ng-required="true">
-          </md-input-container>
-          <md-input-container class="md-block">
-            <input type="submit" id="submit" value="Submit" />
-            <!--<button ng-click="login($event)" type="submit">Login</button>-->
-          </md-input-container>
-          <p id="results">
-            
-          </p>
-          <div>
-            <h5>{{credentials}}</h5>
-          </div>
-        </md-whiteframe>  
-        <h5></h5>
-      </div>
-    </form>
-  </md-content>  
+            <md-card-content>
+                <form ng-submit="login()"  role="form" >
+                    <md-input-container class="md-block">
+                        <label for="username"><md-icon>account_circle</md-icon>Username</label>
+                        <input type="text" name="userName" ng-model="userName" required />
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label for="password"><md-icon>fingerprint</md-icon>Password</label>
+                        <input id="password" name="password" ng-model="password" type="password" required />
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <div layout="row" layout-align="center center">
+                            <md-button class="md-raised md-accent" flex="50" type="submit" id="submit" value="Submit"><md-icon>lock_open</md-icon>Login</md-button>
+                        </div>
+                    </md-input-container>
+                </form>
+            </md-card-content>
+        </md-card>
+        <!-- shows up when the wrong credentials are entered -->
+        <md-card class="md-whiteframe-4dp {{displayClass}}" >
+            <md-card-title>
+                <md-card-title-text>
+                    <span class="md-headline">Oops... Something went wrong</span>
+                </md-card-title-text>
+            </md-card-title>
+            <md-card-content >
+                <p>
+                    {{message}}
+                    <br>Please re-enter your username and password again.
+                </p>
+            </md-card-content>
+        </md-card>
+    </section>
 </div>

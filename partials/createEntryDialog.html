@@ -1,0 +1,32 @@
+<md-dialog aria-label="Create Entry">
+    <form ng-submit="createToDoItem()" role="form" >
+    <!--<form ng-submit="createToDoItem()" ng-controller="DashBoardCtrl" role="form" > -->
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Create</h2>
+                <span flex></span>
+                <!--<md-button class="md-icon-button" ng-click="cancel()">-->
+                <!--    <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>-->
+                <!--</md-button>-->
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <md-content class="md-padding">
+                <md-whiteframe class="md-whiteframe-z1" layout="column" layout-padding>
+                  <md-input-container class="md-icon-float md-block">
+                    <input id="status" ng-model="status" type="text" placeholder="Status" ng-required="true">
+                  </md-input-container class="md-block">
+                  <md-input-container class="md-icon-float md-block">
+                    <input id="priority" ng-model="priority" type="text" placeholder="Priority" ng-required="true">
+                  </md-input-container>
+                  <md-input-container class="md-icon-float md-block">
+                    <input id="description" ng-model="description" type="text" placeholder="Description" ng-required="true">
+                  </md-input-container>
+                  <md-input-container class="md-block">
+                    <md-button class="md-raised md-accent" flex="50" type="submit" id="submit" value="Submit"><md-icon>mouse</md-icon>Submit</md-button>
+                  </md-input-container>
+                </md-whiteframe>  
+            </md-content>
+        </md-dialog-content>
+    </form>
+</md-dialog>

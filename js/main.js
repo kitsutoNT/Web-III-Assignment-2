@@ -11,6 +11,9 @@
             templateUrl: "partials/dashboard.html",
             controller: "DashBoardCtrl"
         })
+        .when("/aboutUs", {
+            templateUrl: "partials/aboutus.html"
+        })
         //otherwise, display login page
         .otherwise({
             redirectTo: '/login'
@@ -18,6 +21,21 @@
         
     }
     ]);
+    
+    employeeApp.config(function($mdThemingProvider) {
+            $mdThemingProvider
+                .theme('default')
+                .primaryPalette('blue')
+                .accentPalette('pink');
+        });
+    
+    employeeApp.config(function(uiGmapGoogleMapApiProvider) {
+        uiGmapGoogleMapApiProvider.configure({
+            key: 'AIzaSyBqOdjb7qnFyMId4FoLcNDIRnvRbWzYtNA',
+            v: '3.17', //defaults to latest 3.X anyhow
+            libraries: 'weather,geometry,visualization'
+        });
+    })
     
     employeeApp.factory('WebService', function ($http, $q) {
         return {
@@ -37,14 +55,52 @@
                    url: 'https://web3-assignment2-nobuhumi.c9users.io/api/employees/' + token
                 });
             },
-            updateToDo: function () {
-                
+            getToDo: function (userName, token) {
+                return $http ({
+                    method: 'get',
+                    url: 'https://web3-assignment2-nobuhumi.c9users.io/api/employees/' + userName + "/todo/" + token
+                });
             },
-            createToDo: function () {
-                
+            //done testing
+            //todoItem is an object passed into the function
+            updateToDo: function (userName, todoID, token, todoItem) {
+                return $http ({
+                   method: 'put',
+                   url: 'https://web3-assignment2-nobuhumi.c9users.io/api/employees/' + userName + '/todo/' + todoID,
+                   data: {
+                       'token': token,
+                       'status': todoItem.status,
+                       'priority': todoItem.priority,
+                       'description': todoItem.description
+                    }
+                });
             },
-            deleteToDo: function () {
-                
+            //done testing
+            //todoItem is an object passed into the function
+            createToDo: function (userName, todoItem, token) {
+                return $http ({
+                    method: 'post',
+                    url: 'https://web3-assignment2-nobuhumi.c9users.io/api/employees/' + userName + '/todo/',
+                    data: {
+                        'token': token,
+                        'id': todoItem.id,
+                        'status': todoItem.status,
+                        'priority': todoItem.priority,
+                        'date': todoItem.date,
+                        'description': todoItem.description
+                    }
+                });
+            },
+            //done testing
+            deleteToDo: function (userName, todoID, token) {
+                console.log(token);
+                return $http ({
+                    method: 'delete',
+                    url: 'https://web3-assignment2-nobuhumi.c9users.io/api/employees/' + userName + '/todo/' + todoID + "/" + token
+                    // data: {
+                    //     'token': token
+                    // }
+                });
             }
         };
     });

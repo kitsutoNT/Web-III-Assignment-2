@@ -1,0 +1,30 @@
+<md-dialog aria-label="University Detail" class="universityDetailDialog"  ng-cloak>
+  <form>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>{{universityName}}</h2>
+        <span flex></span>
+        <!--<md-button class="md-icon-button" ng-click="cancel()">-->
+          <!--<md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>-->
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content>
+      <div class="mapContainer">
+        <ui-gmap-google-map ng-if="showMap" center='map.center' zoom='map.zoom' refresh="map.fresh">
+          <ui-gmap-marker idKey= 'universityId' coords="map.center" ></ui-gmap-marker>
+        </ui-gmap-google-map>
+			</div>
+			<hr>
+			<div class='universityInfo'>
+			  <p><strong>Name: </strong>{{universityName}}</p>
+			  <p><b>ID: </b>{{universityId}}</p>
+			  <p><b>Address: </b>{{universityAddress}}</p>
+			  <p><b>City: </b>{{universityCity}}</p>
+			  <p><b>State: </b>{{universityState}}</p>
+			  <p><b>Zip: </b>{{universityZip}}</p>
+			  <p><b>Website: </b>{{universityWebsite}}</p>
+			</div>
+    </md-dialog-content>
+  </form>
+</md-dialog>

@@ -1,0 +1,41 @@
+<md-dialog aria-label="Edit Entry">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>Edit Entry</h2>
+            <span flex></span>
+            <!--<md-button class="md-icon-button" ng-click="cancel()">-->
+            <!--    <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>-->
+            <!--</md-button>-->
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <md-tabs md-dynamic-height md-border-bottom>
+            <md-tab label="REMOVE">
+                <md-content class="md-padding">
+                    <md-button class="md-raised md-primary" ng-click='deleteToDoItem(selectedId)'><md-icon>delete</md-icon>Confirm Deleting Entry</md-button>
+                </md-content>
+            </md-tab>
+            <md-tab label="UPDATE">
+                <form ng-submit="updateToDoItem(selectedId)"  role="form" >
+                    <md-content class="md-padding">
+                        <md-whiteframe class="md-whiteframe-z1" layout="column" layout-padding>
+                          <md-input-container class="md-icon-float md-block">
+                                <input id="status" ng-model="updateStatus" type="text" placeholder="Status" ng-required="true">
+                            </md-select>
+                          </md-input-container class="md-block">
+                          <md-input-container class="md-icon-float md-block">
+                            <input id="priority" ng-model="updatePriority" type="text" placeholder="Priority" ng-required="true">
+                          </md-input-container>
+                          <md-input-container class="md-icon-float md-block">
+                            <input id="description" ng-model="updateDescription" type="text" placeholder="Description" ng-required="true">
+                          </md-input-container>
+                          <md-input-container class="md-block">
+                            <md-button class="md-raised md-accent" flex="50" type="submit" id="submit" value="Submit"><md-icon>mouse</md-icon>Submit</md-button>
+                          </md-input-container>
+                        </md-whiteframe>  
+                    </md-content>
+                </form>
+            </md-tab>
+        </md-tabs>          
+    </md-dialog-content>
+</md-dialog>
